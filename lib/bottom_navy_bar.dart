@@ -67,38 +67,44 @@ class BottomNavyBar extends StatelessWidget {
     final bgColor = backgroundColor ?? Theme.of(context).bottomAppBarColor;
 
     return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        boxShadow: [
-          if (showElevation)
-            const BoxShadow(
-              color: Colors.black12,
-              blurRadius: 2,
+      // color: Scaffold.of(context).widget.backgroundColor,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          boxShadow: [
+            if (showElevation)
+              const BoxShadow(
+                color: Colors.black12,
+                blurRadius: 2,
+              ),
+          ],
+        ),
+        child: SafeArea(
+          child: Container(
+            width: double.infinity,
+            height: containerHeight,
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+            child: Row(
+              mainAxisAlignment: mainAxisAlignment,
+              children: items.map((item) {
+                var index = items.indexOf(item);
+                return GestureDetector(
+                  onTap: () => onItemSelected(index),
+                  child: _ItemWidget(
+                    item: item,
+                    iconSize: iconSize,
+                    isSelected: index == selectedIndex,
+                    backgroundColor: bgColor,
+                    itemCornerRadius: itemCornerRadius,
+                    animationDuration: animationDuration,
+                    curve: curve,
+                  ),
+                );
+              }).toList(),
             ),
-        ],
-      ),
-      child: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: containerHeight,
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-          child: Row(
-            mainAxisAlignment: mainAxisAlignment,
-            children: items.map((item) {
-              var index = items.indexOf(item);
-              return GestureDetector(
-                onTap: () => onItemSelected(index),
-                child: _ItemWidget(
-                  item: item,
-                  iconSize: iconSize,
-                  isSelected: index == selectedIndex,
-                  backgroundColor: bgColor,
-                  itemCornerRadius: itemCornerRadius,
-                  animationDuration: animationDuration,
-                  curve: curve,
-                ),
-              );
-            }).toList(),
           ),
         ),
       ),
@@ -132,7 +138,9 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-        width: isSelected ? 130 : 50,
+        width: isSelected
+            ? MediaQuery.of(context).size.width * 0.3
+            : MediaQuery.of(context).size.width * 0.1,
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
@@ -144,13 +152,19 @@ class _ItemWidget extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           physics: const NeverScrollableScrollPhysics(),
           child: Container(
-            width: isSelected ? 130 : 50,
+            width: isSelected
+                ? MediaQuery.of(context).size.width * 0.3
+                : MediaQuery.of(context).size.width * 0.95,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                if (isSelected)
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.02,
+                  ),
                 IconTheme(
                   data: IconThemeData(
                     size: iconSize,
@@ -167,6 +181,7 @@ class _ItemWidget extends StatelessWidget {
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
                           color: item.activeTextColor,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
