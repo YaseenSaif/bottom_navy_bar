@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 /// Update [selectedIndex] to change the selected item.
 /// [selectedIndex] is required and must not be null.
 class BottomNavyBar extends StatelessWidget {
-  BottomNavyBar({
+  const BottomNavyBar({
     Key? key,
     this.selectedIndex = 0,
     this.showElevation = true,
@@ -137,16 +137,15 @@ class _ItemWidget extends StatelessWidget {
         duration: animationDuration,
         curve: curve,
         decoration: BoxDecoration(
-          color:
-              isSelected ? item.activeColor.withOpacity(0.2) : backgroundColor,
+          color: isSelected ? item.activeBackgroundColor : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornerRadius),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Container(
             width: isSelected ? 130 : 50,
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -156,20 +155,18 @@ class _ItemWidget extends StatelessWidget {
                   data: IconThemeData(
                     size: iconSize,
                     color: isSelected
-                        ? item.activeColor.withOpacity(1)
-                        : item.inactiveColor == null
-                            ? item.activeColor
-                            : item.inactiveColor,
+                        ? item.activeIconColor.withOpacity(1)
+                        : item.inactiveColor ?? item.activeIconColor,
                   ),
                   child: item.icon,
                 ),
                 if (isSelected)
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: item.activeColor,
+                          color: item.activeTextColor,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -192,7 +189,9 @@ class BottomNavyBarItem {
   BottomNavyBarItem({
     required this.icon,
     required this.title,
-    this.activeColor = Colors.blue,
+    this.activeBackgroundColor = Colors.blue,
+    this.activeIconColor = Colors.blue,
+    this.activeTextColor = Colors.blue,
     this.textAlign,
     this.inactiveColor,
   });
@@ -205,7 +204,15 @@ class BottomNavyBarItem {
 
   /// The [icon] and [title] color defined when this item is selected. Defaults
   /// to [Colors.blue].
-  final Color activeColor;
+  final Color activeIconColor;
+
+  /// The [icon] and [title] color defined when this item is selected. Defaults
+  /// to [Colors.blue].
+  final Color activeBackgroundColor;
+
+  /// The [icon] and [title] color defined when this item is selected. Defaults
+  /// to [Colors.blue].
+  final Color activeTextColor;
 
   /// The [icon] and [title] color defined when this item is not selected.
   final Color? inactiveColor;
